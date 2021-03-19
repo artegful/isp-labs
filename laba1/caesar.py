@@ -28,7 +28,6 @@ def file_cipher(
 
     table = str.maketrans(characters, characters[key:] + characters[:key])
 
-#fix in order to remove crash
     with file_context(file_name, "r") as f_in:
         with file_context(output_file_name, "w") as f_out:
             for line in f_in:
@@ -36,16 +35,22 @@ def file_cipher(
                 f_out.write(new_line)
 
     logging.info(
-        "The file %s has been translated successfully and saved to %s", file_name, output_file_name
+        "The file %s has been translated successfully and saved to %s",
+        file_name,
+        output_file_name,
     )
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input_file", type=str, help="Input file for ecnrypting")
-    parser.add_argument("output_file", type=str, help="Output file for encrypted output")
+    parser.add_argument(
+        "output_file", type=str, help="Output file for encrypted output"
+    )
     parser.add_argument("-k", "--key", type=int, default=3, help="Key for encryption")
-    parser.add_argument("-d", "--decrypt", action="store_true", help="Is decrypting file")
+    parser.add_argument(
+        "-d", "--decrypt", action="store_true", help="Is decrypting file"
+    )
 
     args = parser.parse_args()
 
