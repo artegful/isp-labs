@@ -5,14 +5,14 @@ Use get_formats to get all markup formats
 """
 
 from .utility import *
-from . import json
-from . import pickle
-from . import yaml
+import custom_json
+import custom_yaml
+import custom_pickle
 
 
 _formats = {}
 
-modules = [json, pickle, yaml]
+modules = [custom_json, custom_pickle, custom_yaml]
 
 
 def dumps(obj, format):

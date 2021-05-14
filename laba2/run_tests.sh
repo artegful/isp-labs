@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cp ./tests/*tests.py .
-pytest --cov=serializer ./*tests.py
-rm ./*tests.py
+export PYTHONPATH="."
+
+pytest --cov=serializer tests/*tests.py
