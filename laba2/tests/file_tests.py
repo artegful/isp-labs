@@ -46,5 +46,5 @@ def test_container_cls():
 def test_container_obj():
     subject = ContainerCls()
 
-    assert_vars(type(subject))
     assert_vars(subject)
+    
