@@ -25,7 +25,7 @@ setup(
     url="https://github.com/artegful/isp-labs/tree/master/laba2",
     license="MIT",
     setup_requires=["wheel"],
-    install_requires=["pyyaml", "wheel"],
+    install_requires=["wheel"],
     packages=["serializer", "serializer.utility", "custom_json", "custom_yaml", "custom_pickle"],
     entry_points={"console_scripts": "convert=serializer.__main__:main"},
 )
