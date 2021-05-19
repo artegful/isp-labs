@@ -1,0 +1,19 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Noty</title>
+  <meta name="description" content="Noty app for taking fast notes">
+</head>
+
+<body>
+    {% for note in notes %}
+        <div>
+            <h1><a href="">{{ note.title }}</a></h1>
+            <p>{{ note.content|linebreaksbr }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
