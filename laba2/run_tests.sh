@@ -2,4 +2,4 @@
 
 export PYTHONPATH="."
 
-pytest --cov=serializer tests/*tests.py
+pytest --cov=custom_json --cov=custom_pickle --cov=custom_yaml --cov=serializer/utility tests/*tests.py
