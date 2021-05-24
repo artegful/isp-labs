@@ -97,10 +97,12 @@ WSGI_APPLICATION = "noty.wsgi.application"
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': '/etc/mysql/my.cnf',
-        },
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'noty_db',
+        'USER' : 'django',
+        'PASSWORD' : 'django',
+        'HOST' : '127.0.0.1',
+        'PORT' : '5432',
     }
 }
 
