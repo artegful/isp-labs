@@ -2,7 +2,7 @@ name: Noty CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
 
