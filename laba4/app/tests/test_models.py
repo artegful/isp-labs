@@ -6,7 +6,7 @@ from django.utils.timezone import now
 
 @pytest.fixture
 def user():
-    return User.objects.create_user("Vasya", "vasya@gmail.com", "vasyapassword")
+    return User.objects.create_user('Vasya', 'vasya@gmail.com', 'vasyapassword')
 
 
 @pytest.fixture
@@ -32,3 +32,4 @@ def test_owner(note, user):
 @pytest.mark.django_db
 def test_str(note):
     assert note.title == str(note)
+

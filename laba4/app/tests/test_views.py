@@ -1,11 +1,10 @@
-from note.models import NoteForm
+from note.models import Note, NoteForm
 from authentication.models import SignupForm
 from _pytest.monkeypatch import resolve
 import pytest
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from pytest_django.asserts import assertTemplateUsed, assertRedirects
-from note.models import Note
 
 
 @pytest.fixture
