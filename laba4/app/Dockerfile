@@ -18,7 +18,6 @@ RUN apk update \
 FROM python:3.8.3-alpine
 
 #set env
-ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
 
 # create app user dir
@@ -42,6 +41,5 @@ RUN apk update \
 RUN chown -R app:app ${APP_HOME}
 USER app
 
-# run entrypoint.prod.sh
-# rm alpine tmps
-ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
+# run entrypoint.sh
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]
