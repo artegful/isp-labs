@@ -54,6 +54,10 @@
         line: 'DJANGO_ALLOWED_HOSTS=*'
         backrefs: yes
 
+    - name: "Stop apps"
+      command:
+        cmd: docker-compose -f isp-labs/laba4/docker-compose.prod.yml down -v
+
     - name: "Deploy apps"
       command: 
         cmd: docker-compose -f isp-labs/laba4/docker-compose.prod.yml up --build -d
