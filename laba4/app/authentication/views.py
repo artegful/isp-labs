@@ -90,6 +90,7 @@ def reset_password(request):
 
         reset_url = "http://" + current_site.domain + link
 
+        # f string
         email = EmailMessage(
             email_subject,
             "Hi "
@@ -131,5 +132,6 @@ def complete_password_reset(request, uidb64, token):
 
     form = SetPasswordForm()
     context = {"uidb64": uidb64, "token": token, "form": form}
+    # context = dict(uudi=uidb64, ...)
 
     return render(request, "authentication/set_new_password.html", context)

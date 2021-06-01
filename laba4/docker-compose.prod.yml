@@ -1,11 +1,10 @@
-version: '3.7'
+version: '2.0'
 
 services:
   web:
     image: artegful/noty-web
     build:
       context: ./app
-      dockerfile: Dockerfile.prod
     command: gunicorn noty.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/home/app/web/staticfiles
@@ -36,3 +35,4 @@ services:
 volumes:
   postgres_data:
   static_volume:
+    
