@@ -65,3 +65,8 @@
     - name: "Collect static"
       command:
         cmd: docker-compose -f isp-labs/laba4/docker-compose.prod.yml exec web ./manage.py collectstatic --noinput
+
+    - name: "Migrate"
+      command:
+        cmd: docker-compose -f isp-labs/laba4/docker-compose.prod.yml exec web ./manage.py migrate --noinput
+        
