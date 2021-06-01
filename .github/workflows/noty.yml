@@ -29,7 +29,8 @@ jobs:
       - run: pip install -r laba4/app/requirements.txt
       
       - name: Tests 
-        run: tox laba4/app
+        working-directory: laba4/app
+        run: tox
 
       - name: Build and up dev
         run: docker-compose -f laba4/docker-compose.yml up -d
