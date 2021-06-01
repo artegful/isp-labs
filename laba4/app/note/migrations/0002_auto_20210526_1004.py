@@ -8,23 +8,25 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('note', '0001_initial'),
+        ("note", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='note',
-            name='content',
+            model_name="note",
+            name="content",
             field=ckeditor_uploader.fields.RichTextUploadingField(),
         ),
         migrations.AlterField(
-            model_name='note',
-            name='create_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, editable=False),
+            model_name="note",
+            name="create_time",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, editable=False
+            ),
         ),
         migrations.AlterField(
-            model_name='note',
-            name='update_time',
+            model_name="note",
+            name="update_time",
             field=models.DateTimeField(default=django.utils.timezone.now, null=True),
         ),
     ]
