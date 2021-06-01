@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: '3.8'
       - run: pip install -r laba4/app/requirements.txt
-
+      
       - name: Tests 
         run: pytest laba4/app
 
@@ -45,3 +45,14 @@ jobs:
         
       - name: Send prod to Dockerhub
         run: docker-compose -f laba4/docker-compose.prod.yml push
+
+      - name: Install Ansible
+        run: pip install ansible
+
+      - name: Add SSH file
+        working-directory: laba4/ansible
+        run: echo "${{ secrets.SSH }}" > .ssh && chmod 600 .ssh
+
+      - name: Deploy
+        working-directory: laba4/ansible
+        run: ansible-playbook -i inventory main.yml --user ${{ secrets.USER }} -v

@@ -1,7 +1,10 @@
-#!/bin/sh
+#!/uar/bin/wnv bash
 
-if [ ${DATABASE} = "postgres" ]
-then
+set -e
+set -x
+
+
+if [[ ${DATABASE} = "postgres" ]]; then
     echo "Waiting for postgres..."
 
     while ! nc -z $SQL_HOST $SQL_PORT; do
@@ -15,3 +18,6 @@ python manage.py flush --no-input
 python manage.py migrate
 
 exec "$@"
+
+# shellcheck
+# tox
