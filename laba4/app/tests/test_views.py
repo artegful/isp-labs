@@ -1,16 +1,21 @@
-from note.models import Note, NoteForm
-from authentication.models import SignupForm
-from _pytest.monkeypatch import resolve
 import pytest
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from pytest_django.asserts import assertTemplateUsed, assertRedirects
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from note.models import Note, NoteForm
+from authentication.models import SignupForm, SendResetEmailForm, SetPasswordForm
 
 
 @pytest.fixture
 def users():
     users = list()
-    test_user1 = User.objects.create_user(username="testuser1", password="12345")
+    test_user1 = User.objects.create_user(
+        username="testuser1", password="12345", email="artemklimo@gmail.com"
+    )
     test_user1.save()
     users.append(test_user1)
 
@@ -28,7 +33,13 @@ def notes(users):
 
 
 @pytest.mark.parametrize(
-    "url", [r"/authentication/login", r"/authentication/signup", r"/add"]
+    "url",
+    [
+        r"/authentication/login",
+        r"/authentication/signup",
+        r"/add",
+        r"/authentication/reset-password",
+    ],
 )
 def test_response_status(client, url):
     response = client.get(url)
@@ -130,3 +141,34 @@ def test_change_password(client, users):
     assert client.login(username=user.username, password="12345")
     response = client.post(r"/authentication/change-password", data)
     assert client.login(username=user.username, password=data["new_password2"])
+
+
+@pytest.mark.django_db
+def test_reset_password(client, users):
+    data = dict(email="artemklimo@gmail.com")
+
+    assert SendResetEmailForm(data=data).is_valid()
+
+    assert client.post(r"/authentication/reset-password", data).status_code == 200
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "password",
+    ["hellohihihi", "passwordpassword", "saymynamesaymyname"],
+)
+def test_complete_reset_password(client, users, password):
+    uid = urlsafe_base64_encode(force_bytes(users[0].pk))
+    token = PasswordResetTokenGenerator().make_token(users[0])
+    link = reverse(
+        "complete_password_reset",
+        kwargs=dict(uidb64=uid, token=token),
+    )
+
+    assert client.get(link).status_code == 200
+
+    data = dict(new_password1=password, new_password2=password)
+    assert SetPasswordForm(data=data).is_valid()
+
+    client.post(link, data).status_code == 200
+    assert client.login(username=users[0].username, password=password)
