@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.core.validators import validate_email
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.urls import reverse
@@ -29,7 +29,7 @@ def signup(request):
             messages.error(request, "signup is not valid")
 
     form = SignupForm()
-    context = {"form": form}
+    context = dict(form=form)
     return render(request, "authentication/signup.html", context)
 
 
@@ -45,11 +45,11 @@ def change_password(request):
             messages.error(request, "change password is not valid")
 
     form = PasswordChangeForm(request.user)
-    return render(request, "authentication/change_password.html", {"form": form})
+    return render(request, "authentication/change_password.html", dict(form=form))
 
 
 def reset_password(request):
-    context = {"form": SendResetEmailForm()}
+    context = dict(form=SendResetEmailForm())
 
     if request.method == "POST":
         form = SendResetEmailForm(request.POST)
@@ -83,20 +83,16 @@ def reset_password(request):
 
         link = reverse(
             "complete_password_reset",
-            kwargs={"uidb64": email_content["uid"], "token": email_content["token"]},
+            kwargs=dict(uidb64=email_content["uid"], token=email_content["token"]),
         )
 
         email_subject = "Password reset instructions"
 
-        reset_url = "http://" + current_site.domain + link
+        reset_url = f"http://{current_site.domain}{link}"
 
-        # f string
         email = EmailMessage(
             email_subject,
-            "Hi "
-            + user[0].username
-            + ", Please open the link below to reset your password \n"
-            + reset_url,
+            f"Hi {user[0].username}, Please open the link below to reset your password \n{reset_url}",
             "noreply@semycolon.com",
             [email],
         )
@@ -110,7 +106,7 @@ def reset_password(request):
 
 def complete_password_reset(request, uidb64, token):
     try:
-        user_id = force_text(urlsafe_base64_decode(uidb64))
+        user_id = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(id=user_id)
 
         if not PasswordResetTokenGenerator().check_token(user, token):
@@ -131,7 +127,6 @@ def complete_password_reset(request, uidb64, token):
             return redirect("login")
 
     form = SetPasswordForm()
-    context = {"uidb64": uidb64, "token": token, "form": form}
-    # context = dict(uudi=uidb64, ...)
+    context = dict(uidb64=uidb64, token=token, form=form)
 
     return render(request, "authentication/set_new_password.html", context)
