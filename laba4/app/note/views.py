@@ -10,7 +10,7 @@ def index(request):
     if request.user.is_authenticated:
         notes = Note.objects.filter(user__exact=request.user).order_by("create_time")
 
-        return render(request, "note/notes_list.html", {"notes": notes})
+        return render(request, "note/notes_list.html", dict(notes=notes))
     else:
         return redirect("authentication/login")
 
@@ -33,7 +33,7 @@ def add(request):
             messages.error(request, "note is not valid")
 
     form = NoteForm()
-    return render(request, "note/add_note.html", {"form": form})
+    return render(request, "note/add_note.html", dict(form=form))
 
 
 def delete(request, pk):
@@ -64,6 +64,6 @@ def edit(request, pk):
             return redirect("index")
     else:
         form = NoteForm(
-            initial={"title": note.title, "content": note.content}, instance=note
+            initial=dict(title=note.title, content=note.content), instance=note
         )
-        return render(request, "note/add_note.html", {"form": form})
+        return render(request, "note/add_note.html", dict(form=form))
