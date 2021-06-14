@@ -12,7 +12,12 @@ def note_data(user):
 
 @pytest.fixture
 def user_data():
-    return {"username": "Vasya", "email": "vasya@gmail.com", "password1": "vasyapassword", "password2": "vasyapassword"}
+    return {
+        "username": "Vasya",
+        "email": "vasya@gmail.com",
+        "password1": "vasyapassword",
+        "password2": "vasyapassword",
+    }
 
 
 @pytest.fixture
@@ -39,6 +44,7 @@ def signup_form(user_data):
 def test_user_type(signup_form):
     assert signup_form.is_valid()
     assert isinstance(signup_form.save(commit=False), User)
+
 
 @pytest.mark.django_db
 def test_note_type(note_form):

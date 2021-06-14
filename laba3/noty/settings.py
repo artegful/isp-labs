@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-*dar$*wwq(yis7q1h_i2%t3ubk%(8!2n!9azeqok2&=*_4#pkj"
+SECRET_KEY = os.environ.get("SECRET_KEY", "default_key")
 
 # SECURITY WARNING: don't run with debug turned on in produri ction!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = ["127.0.0.1", ".pythonanywhere.com"]
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
 
 # Application definition
@@ -44,22 +44,8 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "active_link",
     "ckeditor",
-    "ckeditor_uploader" 
+    "ckeditor_uploader",
 ]
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"
-LOGIN_REDIRECT_URL = "index"
-LOGOUT_REDIRECT_URL = 'index'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-CKEDITOR_UPLOAD_PATH = "uploads/"
-
-CKEDITOR_CONFIGS = {
-    'default': {
-     'toolbar': 'None'
-    },
-}
 
 
 MIDDLEWARE = [
@@ -96,16 +82,17 @@ WSGI_APPLICATION = "noty.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'noty_db',
-        'USER' : 'django',
-        'PASSWORD' : 'django',
-        'HOST' : '127.0.0.1',
-        'PORT' : '5432',
+    "default": {
+        "ENGINE": os.environ.get(
+            "SQL_ENGINE", "django.db.backends.postgresql_psycopg2"
+        ),
+        "NAME": os.environ.get("SQL_DATABASE", "noty_db"),
+        "USER": os.environ.get("SQL_USER", "django"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "django"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -143,10 +130,31 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "/staticfiles/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = "noty.website@gmail.com"
+EMAIL_HOST_USER = "noty.website@gmail.com"
+EMAIL_HOST_PASSWORD = "noty.django"
+
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+LOGIN_REDIRECT_URL = "index"
+LOGOUT_REDIRECT_URL = "index"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+CKEDITOR_CONFIGS = {
+    "default": {"toolbar": "None"},
+}
