@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'noty.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "noty.settings")
 
 application = get_wsgi_application()
