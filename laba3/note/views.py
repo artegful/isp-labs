@@ -1,3 +1,4 @@
+import logging
 from datetime import time
 from django.core.checks import messages
 from django.shortcuts import redirect, render
@@ -5,6 +6,7 @@ from django.utils import timezone
 from .models import Note, NoteForm
 from django.shortcuts import get_object_or_404
 
+logger = logging.getLogger(__name__)
 
 def index(request):
     if request.user.is_authenticated:
@@ -28,8 +30,10 @@ def add(request):
             note.update_time = now
             note.save()
 
+            logger.info("Note was added")
             return redirect("index")
         else:
+            logger.warning("Add note form was not valid")
             messages.error(request, "note is not valid")
 
     form = NoteForm()
@@ -39,8 +43,10 @@ def add(request):
 def delete(request, pk):
     note = get_object_or_404(Note, pk=pk)
     if note.user != request.user:
+        logger.warning("Attempt of deleting note")
         messages.error(request, "You are not authenticated to perform this action")
     else:
+        logger.info("Note was deleted successfully")
         note.delete()
 
     return redirect("index")
@@ -49,6 +55,7 @@ def delete(request, pk):
 def edit(request, pk):
     note = get_object_or_404(Note, pk=pk)
     if note.user != request.user:
+        logger.warning("Attempt of editing note")
         messages.error(request, "You are not authenticated to perform this action")
         return redirect("index")
     if request.method == "POST":
@@ -60,6 +67,7 @@ def edit(request, pk):
             now = timezone.now()
             note.update_time = now
             note.save()
+            logger.info("Note was edited successfully")
 
             return redirect("index")
     else:
