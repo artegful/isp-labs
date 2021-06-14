@@ -1,5 +1,3 @@
-from .email_thread import EmailThread
-from .models import SignupForm
 from django.shortcuts import redirect, render
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.models import User
@@ -14,8 +12,11 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.urls import reverse
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.exceptions import ValidationError
-from .models import SetPasswordForm, SendResetEmailForm
+import logging
+from .email_thread import EmailThread
+from .models import SetPasswordForm, SendResetEmailForm, SignupForm
 
+logger = logging.getLogger(__name__)
 
 def signup(request):
     if request.method == "POST":
@@ -24,9 +25,11 @@ def signup(request):
             user = form.save()
 
             login(request, user)
+            logger.info("Logging was a success")
             return redirect("index")
         else:
-            messages.error(request, "signup is not valid")
+            logger.warning(f"Signup was not valid")
+            messages.error(request, "Signup is not valid")
 
     form = SignupForm()
     context = dict(form=form)
@@ -40,8 +43,10 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)
             messages.success(request, "Your password was successfully updated!")
+            logger.info("Password for was changed")
             return redirect("index")
         else:
+            logger.warning("Password change was not vaid")
             messages.error(request, "change password is not valid")
 
     form = PasswordChangeForm(request.user)
@@ -55,6 +60,7 @@ def reset_password(request):
         form = SendResetEmailForm(request.POST)
 
         if not form.is_valid():
+            logger.warning("Invalid email")
             messages.error(request, "Please, use valid email")
             return render(request, "authentication/reset_password.html", context)
 
@@ -63,6 +69,7 @@ def reset_password(request):
         try:
             validate_email(email)
         except ValidationError:
+            logger.warning("Invalid email")
             messages.error(request, "Please, use valid email")
             return render(request, "authentication/reset_password.html", context)
 
@@ -72,6 +79,7 @@ def reset_password(request):
 
         if not user.exists():
             messages.error(request, "No users registered with this email")
+            logger.warning(f"There was no user for {email}")
             render(request, "authentication/reset_password.html", context)
 
         email_content = {
@@ -99,6 +107,7 @@ def reset_password(request):
 
         EmailThread(email).start()
 
+        logger.info(f"Email was sent to {email}")
         messages.success(request, "We send you an email with reset")
 
     return render(request, "authentication/reset_password.html", context)
@@ -113,16 +122,19 @@ def complete_password_reset(request, uidb64, token):
             messages.info(request, "This link is invalid, request a new link")
             return redirect("index")
     except:
+        logger.warning("Attempt of use of old link")
         messages.error(request, "Something went wrong, request another link")
         return redirect("index")
 
     if request.method == "POST":
         form = SetPasswordForm(request.POST)
         if not form.is_valid():
+            logger.warning("Password change was invalid")
             messages.error(request, "Passwords do not match")
         else:
             user.set_password(form.cleaned_data["new_password1"])
             user.save()
+            logger.info("Password reset via email successful")
             messages.success(request, "Password reset successful")
             return redirect("login")
 
