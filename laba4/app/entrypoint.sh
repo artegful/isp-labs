@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-if [[ ${DATABASE} = "postgres" ]]; then
+if [ ${DATABASE} -eq "postgres" ]; then
     echo "Waiting for postgres..."
 
     while ! nc -z "${SQL_HOST}" "${SQL_PORT}"; do
